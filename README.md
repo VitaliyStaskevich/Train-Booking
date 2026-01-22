@@ -188,3 +188,33 @@ JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  
 ```
 JWT_SECRET should be changed to a unique value in production.
+
+
+## CI/CD Pipeline
+
+The project uses GitHub Actions to automate testing, documentation generation, and deployment.
+
+### Workflow Triggers
+* Runs on every push to `main` branch
+* Runs on pull requests targeting `main` branch
+
+### Pipeline Stages
+
+**1. Test Job**
+* Checks out the code
+* Sets up Python 3.11
+* Installs dependencies from requirements.txt and setup.py
+* Runs pytest suite to validate code quality
+
+**2. Generate OpenAPI Job** (depends on Test)
+* Installs additional dependencies (uvicorn, httpx)
+* Starts the FastAPI application on localhost:8000
+* Downloads the OpenAPI specification JSON
+* Uploads the spec as a build artifact for documentation
+
+**3. Build & Push Job** (depends on Test, runs on main branch only)
+- Logs into GitHub Container Registry
+- Builds Docker image from Dockerfile
+- Pushes image to ghcr.io with `latest` tag
+
+All jobs run on Ubuntu latest environment.
