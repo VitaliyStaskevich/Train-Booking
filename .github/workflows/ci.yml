@@ -83,4 +83,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/train-booking:latest
+          tags: ghcr.io/${{ github.repository_owner | lower }}/train-booking:latest
